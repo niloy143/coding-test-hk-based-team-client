@@ -20,22 +20,41 @@ const Form = ({ edit }) => {
         if (involvedInSectors.length) {
             setSaving(true);
             setError('');
-            fetch(`https://hk-coding-test-server.vercel.app/user`, {
-                method: "POST",
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({ name, agreeToTerms, involvedInSectors })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.insertedId) {
-                        sessionStorage.setItem('userId', data.insertedId);
-                        navigate('/');
-                    }
+            if (edit) {
+                fetch(`https://hk-coding-test-server.vercel.app/user?id=${user._id}`, {
+                    method: "PUT",
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, agreeToTerms, involvedInSectors })
                 })
-                .catch(err => console.error(err))
-                .finally(() => setSaving(false))
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.modifiedCount > 0) {
+                            navigate('/');
+                        }
+                    })
+                    .catch(err => console.error(err))
+                    .finally(() => setSaving(false))
+            }
+            else {
+                fetch(`https://hk-coding-test-server.vercel.app/user`, {
+                    method: "POST",
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, agreeToTerms, involvedInSectors })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.insertedId) {
+                            sessionStorage.setItem('userId', data.insertedId);
+                            navigate('/');
+                        }
+                    })
+                    .catch(err => console.error(err))
+                    .finally(() => setSaving(false))
+            }
         }
         else {
             setError('Select at least one sector!')
@@ -64,7 +83,7 @@ const Form = ({ edit }) => {
     }, [])
 
     return (
-        userLoading ? <></> : !user && edit ? <Navigate to="/form" /> : user && !edit ? <Navigate to="/" /> :
+        userLoading ? <h3 className="text-center my-12 font-semibold text-xl">Loading...</h3> : !user && edit ? <Navigate to="/form" /> : user && !edit ? <Navigate to="/" /> :
             <div className="py-5 flex justify-center w-full sm:w-[95vw]">
                 <div className="w-full sm:w-auto border rounded-xl shadow-md p-8 mx-3 flex flex-col">
                     <h3 className="text-3xl sm:text-5xl text-center font-semibold py-3">Form</h3>
