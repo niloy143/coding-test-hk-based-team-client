@@ -20,7 +20,7 @@ const Form = ({ edit }) => {
         if (involvedInSectors.length) {
             setSaving(true);
             setError('');
-            fetch(`http://localhost:1234/user`, {
+            fetch(`https://hk-coding-test-server.vercel.app/user`, {
                 method: "POST",
                 headers: {
                     'content-type': 'application/json'
@@ -43,14 +43,14 @@ const Form = ({ edit }) => {
     }
 
     useEffect(() => {
-        fetch(`http://localhost:1234/sectors`)
+        fetch(`https://hk-coding-test-server.vercel.app/sectors`)
             .then(res => res.json())
             .then(data => setSectors(data))
 
 
         const userId = sessionStorage.getItem('userId');
         if (userId) {
-            fetch(`http://localhost:1234/user?id=${userId}`)
+            fetch(`https://hk-coding-test-server.vercel.app/user?id=${userId}`)
                 .then(res => res.json())
                 .then(data => {
                     setUser(data);

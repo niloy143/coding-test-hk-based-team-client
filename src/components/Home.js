@@ -9,7 +9,7 @@ const Home = () => {
     useEffect(() => {
         const userId = sessionStorage.getItem('userId');
         if (userId) {
-            fetch(`http://localhost:1234/user?id=${userId}`)
+            fetch(`https://hk-coding-test-server.vercel.app/user?id=${userId}`)
                 .then(res => res.json())
                 .then(data => {
                     setUserLoading(false);
