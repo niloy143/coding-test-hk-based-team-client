@@ -1,11 +1,12 @@
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Form from "./components/Form";
+import Home from "./components/Home";
 
 function App() {
   const routes = createBrowserRouter([
     {
       path: '/',
-      element: sessionStorage.getItem('userId') ? <div> this is home </div> : <Navigate to="/form" />
+      element: <Home />
     },
     {
       path: '/form',

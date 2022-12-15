@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import Dropdown from "./Dropdown";
 import { RxCross2 } from "react-icons/rx";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 const Form = ({ edit }) => {
     const [sectors, setSectors] = useState([]);
     const [saving, setSaving] = useState(false);
     const [involvedInSectors, setInvolvedInSectors] = useState([]);
     const [user, setUser] = useState(null);
+    const [userLoading, setUserLoading] = useState(true);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -46,21 +47,24 @@ const Form = ({ edit }) => {
             .then(res => res.json())
             .then(data => setSectors(data))
 
-        if (edit) {
-            const userId = sessionStorage.getItem('userId');
-            if (userId) {
-                fetch(`http://localhost:1234/user?id=${userId}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        setUser(data);
-                        setInvolvedInSectors(data.involvedInSectors);
-                    })
-            }
+
+        const userId = sessionStorage.getItem('userId');
+        if (userId) {
+            fetch(`http://localhost:1234/user?id=${userId}`)
+                .then(res => res.json())
+                .then(data => {
+                    setUser(data);
+                    setUserLoading(false);
+                    setInvolvedInSectors(data.involvedInSectors);
+                })
         }
-    }, [edit])
+        else {
+            setUserLoading(false);
+        }
+    }, [])
 
     return (
-        edit && !user ? <h3 className="text-xl font-semibold text-gray-400 py-12 text-center italic">You're in the wrong place, <Link to="/"><span className="text-blue-500 hover:text-gray-400">Go Back</span></Link></h3> :
+        userLoading ? <></> : !user && edit ? <Navigate to="/form" /> : user && !edit ? <Navigate to="/" /> :
             <div className="py-5 flex justify-center w-full sm:w-[95vw]">
                 <div className="w-full sm:w-auto border rounded-xl shadow-md p-8 mx-3 flex flex-col">
                     <h3 className="text-3xl sm:text-5xl text-center font-semibold py-3">Form</h3>
@@ -86,6 +90,7 @@ const Form = ({ edit }) => {
                             <span>Agree to <a href="/" className="text-blue-500">Terms and Conditions</a></span>
                         </div>
                         <button className={`btn ${saving && 'loading'}`}>Save</button>
+                        {edit && <Link to="/"><button className="btn btn-ghost ml-1">Back</button></Link>}
                     </form>
                 </div>
             </div>
