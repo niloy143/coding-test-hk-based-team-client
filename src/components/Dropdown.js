@@ -1,6 +1,14 @@
 import React from 'react';
 
-const Dropdown = ({ sector: { sector, subSectors } }) => {
+const Dropdown = ({ sector: { sector, subSectors }, others: { involvedInSectors, setInvolvedInSectors } }) => {
+
+    const addSector = sector => {
+        const sectorExists = [...involvedInSectors].find(sr => sr === sector);
+        if (!sectorExists) {
+            setInvolvedInSectors([...involvedInSectors, sector]);
+        }
+    }
+
     return (
         <div className="collapse collapse-arrow bg-neutral/10 rounded-md">
             <input type="checkbox" />
@@ -10,10 +18,10 @@ const Dropdown = ({ sector: { sector, subSectors } }) => {
                     {
                         subSectors.map((subSector, i) => {
                             if (typeof subSector === 'object') {
-                                return <Dropdown sector={subSector} key={i} />
+                                return <Dropdown sector={subSector} others={{ involvedInSectors, setInvolvedInSectors }} key={i} />
                             }
                             else {
-                                return <div key={i} className="cursor-pointer hover:text-blue-500 px-5 py-2">{subSector}</div>
+                                return <div key={i} className="cursor-pointer hover:text-blue-500 px-5 py-2" onClick={() => addSector(subSector)}>{subSector}</div>
                             }
                         })
                     }
